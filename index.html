@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-image: url('images\night\cloudy.jpg'); background-repeat:no-repeat; display:cover" >
+  <div class="weather-container">
+    <h2>Weather App</h2>
+    <div class="search-container">
+      <input type="text" id="city-input" placeholder="Enter city name">
+      <button onclick="searchWeather()">Search</button>
+    </div>
+    <div class="weather-info" id="weather-info">
+      <!-- Weather details will be displayed here -->
+    </div>
+  </div>
+
+  <script>
+    function searchWeather() {
+      var city = document.getElementById('city-input').value;
+      var apiKey = 'e004cc87179f89224ffd4a24376224f0'; // Replace with your OpenWeather API key
+      var url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + apiKey;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          displayWeather(data);
+        } else {
+          console.error('Request failed.  Returned status of ' + xhr.status);
+        }
+      };
+      xhr.send();
+    }
+
+    function displayWeather(data) {
+      var weatherInfo = document.getElementById('weather-info');
+      weatherInfo.innerHTML = `
+        <h3>${data.name}, ${data.sys.country}</h3>
+        <p>Temperature: ${Math.round(data.main.temp - 273.15)}°C</p>
+        <p>Weather: ${data.weather[0].description}</p>
+        <p>Humidity: ${data.main.humidity}%</p>
+        <p>Wind Speed: ${data.wind.speed} m/s</p>
+      `;
+    }
+  </script>
+</body>
+</html>
